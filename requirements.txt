@@ -1,3 +1,9 @@
+# Python dependencies
 deepseek-recipe==0.2.0
 fastapi>=0.115,<1
 uvicorn>=0.34,<1
+
+# Runtime prerequisites, not installed by pip:
+# - A built DeepInfer checkout and virtualenv with its NVIDIA dependencies.
+# - A local DeepSeek-V4.1-Flash checkpoint.
+# - Four GPUs in one NVSwitch domain; expert parallelism defaults to four.
