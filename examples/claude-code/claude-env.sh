@@ -36,7 +36,7 @@ export CLAUDE_CODE_MAX_CONTEXT_TOKENS="${GATEWAY_MAX_CONTEXT_TOKENS:-65536}"
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
 # DeepSeek-V4.1 uses a numeric reasoning budget: low=50, high=75, max=100.
-export CLAUDE_CODE_EFFORT_LEVEL="${GATEWAY_EFFORT:-high}"
+export CLAUDE_CODE_EFFORT_LEVEL="${GATEWAY_EFFORT:-max}"
 
 alias cc="IS_SANDBOX=1 claude --allow-dangerously-skip-permissions --permission-mode bypassPermissions"
 alias ct="copilot --allow-all"
