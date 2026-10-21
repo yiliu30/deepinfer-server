@@ -28,7 +28,7 @@ Optional overrides before sourcing:
 - `GATEWAY_MODEL_ID` - model id shown to Claude Code (default
   `DeepSeek-V4.1-Flash`).
 - `GATEWAY_MAX_CONTEXT_TOKENS` - assumed context window; keep it equal to the
-  server's `GATEWAY_MAX_MODEL_LEN` (default `65536`).
+  server's `GATEWAY_MAX_MODEL_LEN` (default `1048576`).
 - `GATEWAY_EFFORT` - reasoning effort: `low`, `high`, or `max` (default
   `max`).
 - `GATEWAY_NO_PROXY` - extra hosts to bypass for HTTP proxies.

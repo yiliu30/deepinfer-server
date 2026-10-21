@@ -32,7 +32,7 @@ export ANTHROPIC_AUTH_TOKEN=dummy
 # Keep Claude Code's assumed window in sync with the engine's max_model_len.
 # Without this it assumes 200k for an unrecognized model id and overfills the
 # server before auto-compact fires.
-export CLAUDE_CODE_MAX_CONTEXT_TOKENS="${GATEWAY_MAX_CONTEXT_TOKENS:-65536}"
+export CLAUDE_CODE_MAX_CONTEXT_TOKENS="${GATEWAY_MAX_CONTEXT_TOKENS:-1048576}"
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 
 # DeepSeek-V4.1 uses a numeric reasoning budget: low=50, high=75, max=100.

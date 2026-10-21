@@ -66,8 +66,11 @@ export GATEWAY_GPUS=0,1,2,3
 
 Model loading takes a few minutes. `/health` reports `"ready": true` once all
 ranks are up. Other knobs: `PORT` (default `8000`), `HOST`, `MASTER_PORT`,
-`GATEWAY_MAX_MODEL_LEN` (default `65536`), `GATEWAY_EP`, `GATEWAY_DP`,
+`GATEWAY_MAX_MODEL_LEN` (default `1048576`), `GATEWAY_EP`, `GATEWAY_DP`,
 `GATEWAY_GPU_MEMORY_UTILIZATION`, `GATEWAY_THINKING`, `GATEWAY_API_KEY`.
+
+The default context window is 1M tokens. Lower `GATEWAY_MAX_MODEL_LEN` if the
+available KV-cache memory cannot hold a sequence of that length.
 
 Keep the four GPU indices on one NUMA/NIC rail set. A mixed set can make DeepEP
 pick mismatched RDMA devices and fail during startup.
