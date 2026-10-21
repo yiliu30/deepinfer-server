@@ -1,9 +1,12 @@
 # DeepInfer Server
 
-An Anthropic Messages API server backed by a DeepInfer inference engine. The
-server handles request conversion, prompt rendering, streaming, tool calls, and
-usage accounting, and exposes the result over HTTP. Any Anthropic-compatible
-client can use it; Claude Code is included as a worked example.
+An Anthropic Messages API server backed by a
+[DeepInfer](https://github.com/deepseek-ai/DeepInfer) inference engine. The
+server handles request conversion with
+[deepseek-recipe](https://github.com/deepseek-ai/deepseek-recipe), prompt
+rendering, streaming, tool calls, and usage accounting, and exposes the result
+over HTTP. Any Anthropic-compatible client can use it; Claude Code is included
+as a worked example.
 
 ## Architecture
 
@@ -39,10 +42,12 @@ flowchart TB
     API -->|"JSON or SSE"| CC
 ```
 
-- **DeepInfer** runs the model: weights, KV cache, expert/data parallelism,
-  sampling, and speculative decoding.
-- **deepseek-recipe** owns the format: protocol conversion, DeepSeek prompt
-  rendering, tokenization, and parsing model output into Anthropic events.
+- **[DeepInfer](https://github.com/deepseek-ai/DeepInfer)** runs the model:
+  weights, KV cache, expert/data parallelism, sampling, and speculative
+  decoding.
+- **[deepseek-recipe](https://github.com/deepseek-ai/deepseek-recipe)** owns the
+  format: protocol conversion, DeepSeek prompt rendering, tokenization, and
+  parsing model output into Anthropic events.
 - **deepinfer-server** owns transport and scheduling: HTTP/SSE, rank
   orchestration, request routing, and readiness reporting.
 
@@ -84,7 +89,8 @@ pick mismatched RDMA devices and fail during startup.
 - The server speaks the Anthropic Messages API only; OpenAI
   `/v1/chat/completions` and `/v1/responses` are not implemented.
 - Text input only for now; image blocks return HTTP 400.
-- DeepInfer has no prefix cache, so each turn re-prefills its full context.
+- [DeepInfer](https://github.com/deepseek-ai/DeepInfer) has no prefix cache, so
+  each turn re-prefills its full context.
 - The first request on each rank pays kernel JIT cost; later turns are faster.
 - Verified with Claude Code 2.1.304, including streamed tool calls and a
   multi-turn write/read file task.
