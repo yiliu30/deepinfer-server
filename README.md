@@ -105,3 +105,7 @@ the full responsibilities table.
 - The first request on each rank pays kernel JIT cost; later turns are faster.
 - Verified with Claude Code 2.1.304, including streamed tool calls and a
   multi-turn write/read file task.
+
+## License
+
+Copyright 2026 Yi Liu. Licensed under the [Apache License 2.0](LICENSE).
