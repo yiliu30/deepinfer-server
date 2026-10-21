@@ -47,6 +47,11 @@ pick mismatched RDMA devices and fail during startup.
 - `GET /v1/models` - served model id.
 - `GET /health` - readiness, GPU list, and engine errors.
 
+## Architecture
+
+See [docs/architecture.md](docs/architecture.md) for the component diagram and
+request flow between DeepInfer, deepseek-recipe, and deepinfer-server.
+
 ## Examples
 
 - [Claude Code](examples/claude-code/README.md) - point Claude Code at the
