@@ -1,17 +1,19 @@
-# DeepInfer Claude Code gateway
+# DeepInfer Server
 
-Anthropic Messages API server backed by a DeepInfer inference engine. It lets
-Claude Code use a locally served DeepSeek model through `ANTHROPIC_BASE_URL`.
+An Anthropic Messages API server backed by a DeepInfer inference engine. The
+server handles request conversion, prompt rendering, streaming, tool calls, and
+usage accounting, and exposes the result over HTTP. Any Anthropic-compatible
+client can use it; Claude Code is included as a worked example.
 
 ## Layout
 
-- `engine_pool.py` - one DeepInfer engine process per GPU, driven in lockstep;
-  expert-parallel collectives stay aligned even when only some ranks have work.
 - `server.py` - FastAPI gateway: `/v1/messages` (JSON and SSE),
   `/v1/messages/count_tokens`, `/v1/models`, `/health`.
+- `engine_pool.py` - one DeepInfer engine process per GPU, driven in lockstep;
+  expert-parallel collectives stay aligned even when only some ranks have work.
 - `start.sh` - loads the DeepInfer environment and starts uvicorn.
-- `claude-env.sh` - exports the Claude Code environment and helpers.
 - `smoke_test.sh` - non-stream, stream, tool-call, and token-count checks.
+- `examples/` - client integrations; see `examples/claude-code/`.
 
 ## Requirements
 
@@ -38,22 +40,22 @@ ranks are up. Other knobs: `PORT` (default `8000`), `HOST`, `MASTER_PORT`,
 Keep the four GPU indices on one NUMA/NIC rail set. A mixed set can make DeepEP
 pick mismatched RDMA devices and fail during startup.
 
-## Use With Claude Code
+## API
 
-```bash
-export GATEWAY_BASE_URL=http://gateway-host:8000
-source claude-env.sh
-cc
-```
+- `POST /v1/messages` - Anthropic Messages, JSON or SSE with `"stream": true`.
+- `POST /v1/messages/count_tokens` - prompt token count.
+- `GET /v1/models` - served model id.
+- `GET /health` - readiness, GPU list, and engine errors.
 
-`claude-env.sh` points all Claude model aliases at the served model, sets the
-context window to the engine's `max_model_len`, and adds `gateway-health`.
-Requests are rewritten to the served checkpoint, so any Claude model id works.
+## Examples
+
+- [Claude Code](examples/claude-code/README.md) - point Claude Code at the
+  server with `ANTHROPIC_BASE_URL`.
 
 ## Notes
 
-- The gateway speaks the Anthropic Messages API only; OpenAI `/v1/chat/completions`
-  and `/v1/responses` are not implemented.
+- The server speaks the Anthropic Messages API only; OpenAI
+  `/v1/chat/completions` and `/v1/responses` are not implemented.
 - Text input only for now; image blocks return HTTP 400.
 - DeepInfer has no prefix cache, so each turn re-prefills its full context.
 - The first request on each rank pays kernel JIT cost; later turns are faster.
