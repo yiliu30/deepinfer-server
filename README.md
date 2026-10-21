@@ -49,8 +49,47 @@ pick mismatched RDMA devices and fail during startup.
 
 ## Architecture
 
-See [docs/architecture.md](docs/architecture.md) for the component diagram and
-request flow between DeepInfer, deepseek-recipe, and deepinfer-server.
+```mermaid
+flowchart TB
+    CC["Client<br/>Claude Code or any Anthropic Messages client"]
+
+    subgraph SERVER["deepinfer-server"]
+        API["API layer: FastAPI<br/>/v1/messages · /count_tokens · /health"]
+        POOL["Engine pool<br/>rank orchestration + token routing"]
+    end
+
+    subgraph RECIPE["deepseek-recipe"]
+        CONV["Request conversion<br/>MessagesRequest.convert"]
+        RENDER["Prompt rendering and tokenization<br/>DeepseekV41Encoding"]
+        STREAM["Stream parsing<br/>StreamProcessor"]
+    end
+
+    subgraph ENGINE["DeepInfer"]
+        RANKS["Engine ranks<br/>EP=4 · DP=4"]
+        WEIGHTS["Weights and KV cache<br/>one rank per GPU"]
+    end
+
+    CC -->|"POST /v1/messages"| API
+    API -->|"request body"| CONV
+    CONV -->|"Conversation"| RENDER
+    RENDER -->|"prompt token IDs + sampling options"| POOL
+    POOL -->|"add_request / step"| RANKS
+    RANKS --- WEIGHTS
+    RANKS -->|"token IDs"| POOL
+    POOL -->|"InferenceChunk.tokens"| STREAM
+    STREAM -->|"thinking / text / tool_use events"| API
+    API -->|"JSON or SSE"| CC
+```
+
+- **DeepInfer** runs the model: weights, KV cache, expert/data parallelism,
+  sampling, and speculative decoding.
+- **deepseek-recipe** owns the format: protocol conversion, DeepSeek prompt
+  rendering, tokenization, and parsing model output into Anthropic events.
+- **deepinfer-server** owns transport and scheduling: HTTP/SSE, rank
+  orchestration, request routing, and readiness reporting.
+
+See [docs/architecture.md](docs/architecture.md) for the request sequence and
+the full responsibilities table.
 
 ## Examples
 
