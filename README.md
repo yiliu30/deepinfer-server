@@ -87,6 +87,10 @@ pick mismatched RDMA devices and fail during startup.
 - [Claude Code](examples/claude-code/README.md) - point Claude Code at the
   server with `ANTHROPIC_BASE_URL`.
 
+## RFCs
+
+- [RFC 0001: Prefix cache support](docs/rfcs/0001-prefix-cache.md)
+
 ## Notes
 
 - The server speaks the Anthropic Messages API only; OpenAI
