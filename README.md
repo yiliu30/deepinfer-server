@@ -92,8 +92,10 @@ pick mismatched RDMA devices and fail during startup.
 - The server speaks the Anthropic Messages API only; OpenAI
   `/v1/chat/completions` and `/v1/responses` are not implemented.
 - Text input only for now; image blocks return HTTP 400.
-- [DeepInfer](https://github.com/deepseek-ai/DeepInfer) has no prefix cache, so
-  each turn re-prefills its full context.
+- The gateway does not implement prefix caching, so each turn re-prefills its
+  full context. [DeepInfer](https://github.com/deepseek-ai/DeepInfer) has an
+  explicit `fork_seq` primitive for reusing a computed prefix, but it is not
+  wired into the gateway.
 - The first request on each rank pays kernel JIT cost; later turns are faster.
 - Verified with Claude Code 2.1.304, including streamed tool calls and a
   multi-turn write/read file task.
